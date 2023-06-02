@@ -10,7 +10,7 @@ Inspired by https://github.com/caarlos0/env
 
 ```ts
 
-import { EnvVariable, BaseConfig } from "@labdigital/config";
+import { EnvVariable, BaseConfig } from "@labdigital/enviconf";
 
 class SampleConfig extends BaseConfig {
   @EnvVariable({ type: "string" })
