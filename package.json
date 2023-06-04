@@ -9,8 +9,8 @@
     "access": "public"
   },
   "type": "module",
-  "main": "index.ts",
-  "types": "index.ts",
+  "main": "index.js",
+  "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "exports": {
     ".": {
