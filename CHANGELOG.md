@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.1.2
+
+### Patch Changes
+
+- 9006dee: Add dist/ path explicitly
+
 ## 0.1.1
 
 ### Patch Changes
