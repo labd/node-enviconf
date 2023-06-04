@@ -1,5 +1,12 @@
 # @labdigital/enviconf
 
+## 0.1.1
+
+### Patch Changes
+
+- 94ef6bf: Implement envSeparator support
+- fd390cc: Fix distribution
+
 ## 0.1.0
 
 ### Minor Changes
