@@ -18,6 +18,10 @@
       "import": "./dist/index.js"
     }
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "prettier": {
     "printWidth": 80,
     "semi": false,
