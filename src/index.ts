@@ -107,7 +107,9 @@ export class BaseConfig {
           this.validateType(options?.type, value)
         } catch (err: any) {
           throw new Error(
-            `Invalid type for ${envName}[${index}] = ${JSON.stringify(value)}: ${err.message}`
+            `Invalid type for ${envName}[${index}] = ${JSON.stringify(
+              value
+            )}: ${err.message}`
           )
         }
       })
@@ -122,7 +124,9 @@ export class BaseConfig {
         this.validateType(options?.type, parsedValue)
       } catch (err: any) {
         throw new Error(
-          `Invalid type for ${envName} = ${JSON.stringify(parsedValue)}: ${err.message}`
+          `Invalid type for ${envName} = ${JSON.stringify(parsedValue)}: ${
+            err.message
+          }`
         )
       }
     }
@@ -185,12 +189,13 @@ export class BaseConfig {
     switch (type) {
       case 'string':
         return value.toString()
-      case 'number':
+      case 'number': {
         const result = parseInt(value, 10)
         if (isNaN(result)) {
           return value.toString()
         }
         return result
+      }
       case 'boolean':
         return value.toLowerCase() === 'true'
       case 'object':
