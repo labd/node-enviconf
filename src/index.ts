@@ -34,6 +34,10 @@ export function EnvVariable(options?: EnvVariableOptions): PropertyDecorator {
   };
 }
 
+interface Constructor<M> {
+  new (...args: any[]): M
+}
+
 export class BaseConfig {
   constructor(private loadEnv: boolean = true) {}
 
@@ -48,6 +52,12 @@ export class BaseConfig {
     for (const [key, config] of Object.entries(properties)) {
       instance[key] = this.loadProperty(key, config, instance[key]);
     }
+  }
+
+  static load<T extends BaseConfig>(this: Constructor<T>): T {
+    const instance = new this();
+    instance.load();
+    return instance
   }
 
   private getConfigs() {

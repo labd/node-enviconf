@@ -20,6 +20,5 @@ class SampleConfig extends BaseConfig {
   public readonly MY_NUMBER_VARIABLE: number = 123;
 }
 
-const config = new SampleConfig();
-config.load()
+const config = SampleConfig.load()
 ```

@@ -41,8 +41,7 @@ describe("BaseConfig", () => {
         public readonly MY_NUMBER_VARIABLE: number;
       }
 
-      const config = new SampleConfig();
-      config.load();
+      const config = SampleConfig.load()
 
       expect(config.MY_STRING_VARIABLE).toBe("custom value");
       expect(config.MY_NUMBER_VARIABLE).toBe(456);
