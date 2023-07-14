@@ -1,13 +1,14 @@
 import { EnvVariable, BaseConfig } from './index'
+import { describe, beforeEach, it, vi, expect } from "vitest"
 
 // Mock the dotenv.config() function
-jest.mock('dotenv', () => ({
-  config: jest.fn(),
+vi.mock('dotenv', () => ({
+  config: vi.fn(),
 }))
 
 describe('BaseConfig', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('load', () => {
