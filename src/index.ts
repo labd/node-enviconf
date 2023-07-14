@@ -14,9 +14,13 @@ type EnvVariableOptions = {
   envSeparator?: string
 }
 
-type EnvVariableDict = Record<string, EnvVariableOptions | undefined>
+type decorateOpts = {
+  type: KnownTypes
+} & EnvVariableOptions
 
-export function EnvVariable(options?: EnvVariableOptions): PropertyDecorator {
+type EnvVariableDict = Record<string, decorateOpts | undefined>
+
+function decorate(options?: decorateOpts): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol) {
     let envVariableConfigs: EnvVariableDict = (target as any)[INTERNAL_KEY]
 
@@ -76,7 +80,7 @@ export class BaseConfig {
 
   private loadProperty(
     propertyKey: string,
-    options: EnvVariableOptions | undefined,
+    options: decorateOpts | undefined,
     currentValue: any
   ): any {
     const envName = options?.envName || propertyKey
@@ -184,6 +188,7 @@ export class BaseConfig {
         return undefined
     }
   }
+export const EnvVariable = decorate
 
   private coerceValue(type: KnownTypes, value: string): any {
     switch (type) {
@@ -204,4 +209,9 @@ export class BaseConfig {
         return value.toString()
     }
   }
+export const envprop = {
+  number: (options?: EnvVariableOptions) =>
+    decorate({ type: 'number', ...options }),
+  string: (options?: EnvVariableOptions) =>
+    decorate({ type: 'string', ...options }),
 }

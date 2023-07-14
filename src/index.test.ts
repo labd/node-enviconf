@@ -1,4 +1,4 @@
-import { EnvVariable, BaseConfig } from './index'
+import { EnvVariable, BaseConfig, envprop } from './index'
 import { describe, beforeEach, it, vi, expect } from "vitest"
 
 // Mock the dotenv.config() function
@@ -15,13 +15,13 @@ describe('BaseConfig', () => {
     it('should load environment variables and set instance properties with default values', () => {
       // Define a sample class that extends BaseConfig
       class SampleConfig extends BaseConfig {
-        @EnvVariable({ type: 'string' })
+        @envprop.string()
         public readonly MY_STRING_VARIABLE: string = 'default value'
 
-        @EnvVariable({ type: 'number' })
+        @envprop.number()
         public readonly MY_NUMBER_VARIABLE: number = 123
 
-        @EnvVariable({ type: 'string', envSeparator: ',' })
+        @envprop.string({ envSeparator: ',' })
         public readonly MY_ARRAY_VARIABLE: string[] = ['one']
       }
 
@@ -40,13 +40,13 @@ describe('BaseConfig', () => {
       process.env.MY_ARRAY_VARIABLE = 'one,two,three'
 
       class SampleConfig extends BaseConfig {
-        @EnvVariable({ type: 'string' })
+        @envprop.string()
         readonly MY_STRING_VARIABLE: string = 'default value'
 
-        @EnvVariable({ type: 'number' })
+        @envprop.number()
         readonly MY_NUMBER_VARIABLE: number
 
-        @EnvVariable({ type: 'string', envSeparator: ',' })
+        @envprop.string({ envSeparator: ',' })
         readonly MY_ARRAY_VARIABLE: string[]
       }
 
@@ -59,7 +59,7 @@ describe('BaseConfig', () => {
 
     it('should throw an error for missing required environment variable', () => {
       class SampleConfig extends BaseConfig {
-        @EnvVariable({ type: 'string', required: true })
+        @envprop.string({ required: true })
         public MY_REQUIRED_VARIABLE: string
       }
 
@@ -91,7 +91,7 @@ describe('BaseConfig', () => {
       process.env.MY_NUMBERS = '1,two,3'
 
       class SampleConfig extends BaseConfig {
-        @EnvVariable({ type: 'number', envSeparator: ',' })
+        @envprop.number({ envSeparator: ',' })
         public MY_NUMBERS: number[]
       }
 
