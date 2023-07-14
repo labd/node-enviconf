@@ -70,6 +70,18 @@ describe('BaseConfig', () => {
       }).toThrowError('Missing required env variable MY_REQUIRED_VARIABLE')
     })
 
+
+    it('should allow optional values for environment variable', () => {
+      class SampleConfig extends BaseConfig {
+        @envprop.string({ optional: true })
+        public MY_OPTIONAL_VARIABLE: string
+      }
+
+      const config = new SampleConfig()
+      config.load()
+      expect(config.MY_OPTIONAL_VARIABLE).toBe('')
+    })
+
     it('should throw an error for invalid type of environment variable', () => {
       process.env.MY_NUMBER_VARIABLE = 'some-string'
 

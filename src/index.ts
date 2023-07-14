@@ -5,8 +5,7 @@ type KnownTypes = 'string' | 'number' | 'boolean' | 'object'
 const INTERNAL_KEY = '__envVariables'
 
 type EnvVariableOptions = {
-  type: KnownTypes
-  required?: boolean
+  optional?: boolean
   validator?: Validator
   unset?: boolean
 
@@ -86,14 +85,16 @@ export class BaseConfig {
     const envName = options?.envName || propertyKey
     const envValue = process.env[envName]
 
-    if (!envValue) {
-      if (options?.required) {
-        throw new Error(`Missing required env variable ${envName}`)
+    if (envValue === undefined) {
+      if (currentValue !== undefined) {
+        return currentValue
       }
 
-      return currentValue !== undefined
-        ? currentValue
-        : this.getDefaultValue(options?.type || 'string')
+      if (options?.optional) {
+        return getDefaultValue(options?.type || 'string')
+      }
+
+      throw new Error(`Missing required env variable ${envName}`)
     }
 
     let parsedValue: any = envValue
