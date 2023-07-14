@@ -151,4 +151,8 @@ export const envprop = {
     decorate({ type: 'number', ...options }),
   string: (options?: EnvVariableOptions) =>
     decorate({ type: 'string', ...options }),
+  object: (options?: EnvVariableOptions) =>
+    decorate({ type: 'object', ...options }),
+  boolean: (options?: EnvVariableOptions) =>
+    decorate({ type: 'boolean', ...options }),
 }
