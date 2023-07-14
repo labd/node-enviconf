@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.2.1
+
+### Patch Changes
+
+- 97f35ef: Add .boolean and .object to envprop
+
 ## 0.2.0
 
 ### Minor Changes
