@@ -32,7 +32,8 @@
     "build": "tsup",
     "test": "pnpm vitest",
     "publish:ci": "pnpm build && pnpm changeset publish",
-    "lint": "eslint src/*.ts"
+    "lint": "eslint src/*.ts",
+    "tsc": "tsc --noEmit"
   },
   "testMatch": [
     "src/**/*.test.ts"
