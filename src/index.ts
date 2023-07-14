@@ -1,7 +1,7 @@
 import { config as dotenvConfig } from 'dotenv'
+import { KnownTypes, coerceValue, getDefaultValue, validateType } from './parse'
 
 type Validator = (value: any) => void
-type KnownTypes = 'string' | 'number' | 'boolean' | 'object'
 const INTERNAL_KEY = '__envVariables'
 
 type EnvVariableOptions = {
@@ -104,12 +104,12 @@ export class BaseConfig {
     if (options?.envSeparator) {
       parsedValue = parsedValue
         .split(options.envSeparator)
-        .map((value: string) => this.coerceValue(options?.type, value.trim()))
+        .map((value: string) => coerceValue(options?.type, value.trim()))
 
       // Validate the type of each value
       parsedValue.forEach((value: any, index: number) => {
         try {
-          this.validateType(options?.type, value)
+          validateType(options?.type, value)
         } catch (err: any) {
           throw new Error(
             `Invalid type for ${envName}[${index}] = ${JSON.stringify(
@@ -126,7 +126,7 @@ export class BaseConfig {
         parsedValue = envValue
       }
       try {
-        this.validateType(options?.type, parsedValue)
+        validateType(options?.type, parsedValue)
       } catch (err: any) {
         throw new Error(
           `Invalid type for ${envName} = ${JSON.stringify(parsedValue)}: ${
@@ -142,74 +142,10 @@ export class BaseConfig {
 
     return parsedValue
   }
+}
 
-  // validateType is a helper function to validate the type of a value. Throws
-  // an error if the type is invalid.
-  private validateType(type: KnownTypes = 'string', value: any): void {
-    switch (type) {
-      case 'string':
-        if (typeof value !== 'string') {
-          throw new Error(`Expected string but got ${typeof value}`)
-        }
-        break
-      case 'number':
-        if (typeof value !== 'number') {
-          throw new Error(`Expected number but got ${typeof value}`)
-        }
-        if (isNaN(value)) {
-          throw new Error(`Expected number but got ${typeof value}`)
-        }
-        break
-      case 'boolean':
-        if (typeof value !== 'boolean') {
-          throw new Error(`Expected boolean but got ${typeof value}`)
-        }
-        break
-      case 'object':
-        if (typeof value !== 'object') {
-          throw new Error(`Expected object but got ${typeof value}`)
-        }
-        break
-      default:
-        throw new Error(`Invalid type ${type}`)
-    }
-  }
-
-  private getDefaultValue(type: KnownTypes): any {
-    switch (type) {
-      case 'string':
-        return ''
-      case 'number':
-        return 0
-      case 'boolean':
-        return false
-      case 'object':
-        return {}
-      default:
-        return undefined
-    }
-  }
 export const EnvVariable = decorate
 
-  private coerceValue(type: KnownTypes, value: string): any {
-    switch (type) {
-      case 'string':
-        return value.toString()
-      case 'number': {
-        const result = parseInt(value, 10)
-        if (isNaN(result)) {
-          return value.toString()
-        }
-        return result
-      }
-      case 'boolean':
-        return value.toLowerCase() === 'true'
-      case 'object':
-        return JSON.parse(value)
-      default:
-        return value.toString()
-    }
-  }
 export const envprop = {
   number: (options?: EnvVariableOptions) =>
     decorate({ type: 'number', ...options }),
