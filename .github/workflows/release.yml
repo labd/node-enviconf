@@ -59,13 +59,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: pnpm run test --ci --coverage --maxWorkers=2
+        run: pnpm run test:ci
 
       - name: Build
         run: pnpm build
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
 
   release:
     timeout-minutes: 15

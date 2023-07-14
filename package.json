@@ -30,7 +30,8 @@
   },
   "scripts": {
     "build": "tsup",
-    "test": "pnpm vitest",
+    "test": "pnpm vitest run",
+    "test:ci": "pnpm vitest run --coverage",
     "publish:ci": "pnpm build && pnpm changeset publish",
     "lint": "eslint src/*.ts",
     "tsc": "tsc --noEmit"
