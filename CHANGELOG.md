@@ -1,5 +1,15 @@
 # @labdigital/enviconf
 
+## 0.2.0
+
+### Minor Changes
+
+- 4b22b0a: Simplify API by exporting type decorators
+
+### Patch Changes
+
+- ff3eccf: Make values without default value by default required
+
 ## 0.1.2
 
 ### Patch Changes
