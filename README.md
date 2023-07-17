@@ -10,15 +10,18 @@ Inspired by https://github.com/caarlos0/env
 
 ```ts
 
-import { EnvVariable, BaseConfig } from "@labdigital/enviconf";
+import { BaseConfig, envprop } from "@labdigital/enviconf";
 
 class SampleConfig extends BaseConfig {
-  @EnvVariable({ type: "string" })
+  @envprop.string()
   public readonly MY_STRING_VARIABLE: string = "default value";
 
-  @EnvVariable({ type: "number" })
+  @envprop.number()
   public readonly MY_NUMBER_VARIABLE: number = 123;
 }
 
-const config = SampleConfig.load()
+const config = SampleConfig.load({
+  path: ".env", // optional
+  loadEnv: true, // optional, defaults to true
+})
 ```

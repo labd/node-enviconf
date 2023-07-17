@@ -19,6 +19,12 @@ type decorateOpts = {
 
 type EnvVariableDict = Record<string, decorateOpts | undefined>
 
+type LoadOptions = {
+  path?: string
+  loadEnv?: boolean
+  envPrefix?: string
+}
+
 function decorate(options?: decorateOpts): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol) {
     let envVariableConfigs: EnvVariableDict = (target as any)[INTERNAL_KEY]
@@ -42,24 +48,26 @@ interface Constructor<M> {
 }
 
 export class BaseConfig {
-  constructor(private loadEnv: boolean = true) {}
-
-  public load(): void {
-    if (this.loadEnv) {
-      dotenvConfig()
+  public load(options?: LoadOptions): void {
+    if (options?.path && options?.loadEnv !== false) {
+      dotenvConfig({
+        path: options?.path,
+      })
     }
 
     const properties = this.getConfigs()
-
     const instance = this as any
     for (const [key, config] of Object.entries(properties)) {
       instance[key] = this.loadProperty(key, config, instance[key])
     }
   }
 
-  static load<T extends BaseConfig>(this: Constructor<T>): T {
+  static load<T extends BaseConfig>(
+    this: Constructor<T>,
+    options?: LoadOptions
+  ): T {
     const instance = new this()
-    instance.load()
+    instance.load(options)
     return instance
   }
 
