@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.3.0
+
+### Minor Changes
+
+- effd012: Add optional options to .load() to specifiy path to load .env from
+
 ## 0.2.1
 
 ### Patch Changes
