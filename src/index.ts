@@ -4,7 +4,7 @@ import { KnownTypes, coerceValue, getDefaultValue, validateType } from './parse'
 type Validator = (value: any) => void
 const INTERNAL_KEY = '__envVariables'
 
-type EnvVariableOptions = {
+type PropertyOptions = {
   optional?: boolean
   validator?: Validator
   unset?: boolean
@@ -15,9 +15,10 @@ type EnvVariableOptions = {
 
 type decorateOpts = {
   type: KnownTypes
-} & EnvVariableOptions
+  envPrefix?: string
+} & PropertyOptions
 
-type EnvVariableDict = Record<string, decorateOpts | undefined>
+type EnvVariableDict = Record<string, decorateOpts>
 
 type LoadOptions = {
   path?: string
@@ -25,7 +26,7 @@ type LoadOptions = {
   envPrefix?: string
 }
 
-function decorate(options?: decorateOpts): PropertyDecorator {
+function decorate(options: decorateOpts): PropertyDecorator {
   return function (target: object, propertyKey: string | symbol) {
     let envVariableConfigs: EnvVariableDict = (target as any)[INTERNAL_KEY]
 
@@ -58,7 +59,11 @@ export class BaseConfig {
     const properties = this.getConfigs()
     const instance = this as any
     for (const [key, config] of Object.entries(properties)) {
-      instance[key] = this.loadProperty(key, config, instance[key])
+      const propertyConfig: decorateOpts = {
+        ...config,
+        envPrefix: options?.envPrefix,
+      }
+      instance[key] = this.loadProperty(key, propertyConfig, instance[key])
     }
   }
 
@@ -91,7 +96,14 @@ export class BaseConfig {
     currentValue: any
   ): any {
     const envName = options?.envName || propertyKey
-    const envValue = process.env[envName]
+    let envValue: string | undefined
+
+    // Fallback to the unprefixed env variable if the prefixed one is not set
+    if (options?.envPrefix) {
+      envValue = process.env[options.envPrefix + envName] ?? process.env[envName]
+    } else {
+      envValue = process.env[envName]
+    }
 
     if (envValue === undefined) {
       if (currentValue !== undefined) {
@@ -152,15 +164,13 @@ export class BaseConfig {
   }
 }
 
-export const EnvVariable = decorate
-
 export const envprop = {
-  number: (options?: EnvVariableOptions) =>
+  number: (options?: PropertyOptions) =>
     decorate({ type: 'number', ...options }),
-  string: (options?: EnvVariableOptions) =>
+  string: (options?: PropertyOptions) =>
     decorate({ type: 'string', ...options }),
-  object: (options?: EnvVariableOptions) =>
+  object: (options?: PropertyOptions) =>
     decorate({ type: 'object', ...options }),
-  boolean: (options?: EnvVariableOptions) =>
+  boolean: (options?: PropertyOptions) =>
     decorate({ type: 'boolean', ...options }),
 }

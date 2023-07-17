@@ -1,4 +1,4 @@
-import { EnvVariable, BaseConfig, envprop } from './index'
+import { BaseConfig, envprop } from './index'
 import { describe, beforeEach, it, vi, expect } from 'vitest'
 import fs from 'fs'
 import os from 'os'
@@ -124,6 +124,27 @@ describe('initialization', () => {
     expect(config.MY_ARRAY_VARIABLE).toStrictEqual(['one'])
   })
 
+
+  it('should load environment variables with prefix', () => {
+    vi.stubEnv('MY_APP_MY_STRING_VARIABLE', 'custom value')
+    vi.stubEnv('MY_NUMBER_VARIABLE', '456')
+
+    class SampleConfig extends BaseConfig {
+      @envprop.string()
+      readonly MY_STRING_VARIABLE: string = 'default value'
+
+      @envprop.number()
+      readonly MY_NUMBER_VARIABLE: number
+    }
+
+    const config = SampleConfig.load({
+      envPrefix: 'MY_APP_',
+    })
+
+    expect(config.MY_STRING_VARIABLE).toBe('custom value')
+    expect(config.MY_NUMBER_VARIABLE).toBe(456)
+  })
+
 })
 
 describe('validate', () => {
@@ -155,7 +176,7 @@ describe('validate', () => {
     vi.stubEnv('MY_NUMBER_VARIABLE', 'some-string')
 
     class SampleConfig extends BaseConfig {
-      @EnvVariable({ type: 'number' })
+      @envprop.number()
       public MY_NUMBER_VARIABLE: number
     }
 

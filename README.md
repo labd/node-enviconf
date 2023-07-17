@@ -23,5 +23,6 @@ class SampleConfig extends BaseConfig {
 const config = SampleConfig.load({
   path: ".env", // optional
   loadEnv: true, // optional, defaults to true
+  envPrefix: "MY_APP_", // optional, defaults to ""
 })
 ```
