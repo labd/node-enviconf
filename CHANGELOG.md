@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.4.0
+
+### Minor Changes
+
+- 477d956: Add support for setting optional env prefix
+
 ## 0.3.0
 
 ### Minor Changes
