@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.4.1
+
+### Patch Changes
+
+- 6fcbab0: Implement the unset flag to delete environment variable after reading
+
 ## 0.4.0
 
 ### Minor Changes
