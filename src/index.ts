@@ -95,16 +95,29 @@ export class BaseConfig {
     options: decorateOpts | undefined,
     currentValue: any
   ): any {
-    const envName = options?.envName || propertyKey
+    let envName = options?.envName || propertyKey
     let envValue: string | undefined
 
     // Fallback to the unprefixed env variable if the prefixed one is not set
     if (options?.envPrefix) {
-      envValue = process.env[options.envPrefix + envName] ?? process.env[envName]
+      if (process.env[options.envPrefix + envName]) {
+        envName = options.envPrefix + envName
+        envValue = process.env[envName]
+      } else {
+        envValue = process.env[envName]
+      }
     } else {
       envValue = process.env[envName]
     }
 
+    // Unset the value if needed
+    if (options?.unset && envValue !== undefined) {
+      delete process.env[envName]
+    }
+
+    // If the env variable is not set and the property is optional, return the
+    // current (default) value. If the property is not optional and there is no
+    // value set, throw an error.
     if (envValue === undefined) {
       if (currentValue !== undefined) {
         return currentValue

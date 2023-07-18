@@ -205,4 +205,19 @@ describe('validate', () => {
       'Invalid type for MY_NUMBERS[1] = "two": Expected number but got string'
     )
   })
+
+  it('should unset value after reading environment variable', () => {
+    vi.stubEnv('MY_SECRET_VARIABLE', 'some-secret')
+
+    class SampleConfig extends BaseConfig {
+      @envprop.string({ unset: true })
+      public MY_SECRET_VARIABLE: string
+    }
+
+    const config = new SampleConfig()
+    config.load()
+    expect(config.MY_SECRET_VARIABLE).toBe('some-secret')
+    expect(process.env.MY_SECRET_VARIABLE).toBeUndefined()
+  })
+
 })
