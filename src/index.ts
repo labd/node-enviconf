@@ -1,4 +1,3 @@
-import { config as dotenvConfig } from 'dotenv'
 import { KnownTypes, coerceValue, getDefaultValue, validateType } from './parse'
 
 type Validator = (value: any) => void
@@ -15,15 +14,13 @@ type PropertyOptions = {
 
 type decorateOpts = {
   type: KnownTypes
-  envPrefix?: string
+  prefix?: string
 } & PropertyOptions
 
 type EnvVariableDict = Record<string, decorateOpts>
 
 type LoadOptions = {
-  path?: string
-  loadEnv?: boolean
-  envPrefix?: string
+  prefix?: string
 }
 
 function decorate(options: decorateOpts): PropertyDecorator {
@@ -50,18 +47,12 @@ interface Constructor<M> {
 
 export class BaseConfig {
   public load(options?: LoadOptions): void {
-    if (options?.path && options?.loadEnv !== false) {
-      dotenvConfig({
-        path: options?.path,
-      })
-    }
-
     const properties = this.getConfigs()
     const instance = this as any
     for (const [key, config] of Object.entries(properties)) {
       const propertyConfig: decorateOpts = {
         ...config,
-        envPrefix: options?.envPrefix,
+        prefix: options?.prefix,
       }
       instance[key] = this.loadProperty(key, propertyConfig, instance[key])
     }
@@ -99,9 +90,9 @@ export class BaseConfig {
     let envValue: string | undefined
 
     // Fallback to the unprefixed env variable if the prefixed one is not set
-    if (options?.envPrefix) {
-      if (process.env[options.envPrefix + envName]) {
-        envName = options.envPrefix + envName
+    if (options?.prefix) {
+      if (process.env[options.prefix + envName]) {
+        envName = options.prefix + envName
         envValue = process.env[envName]
       } else {
         envValue = process.env[envName]

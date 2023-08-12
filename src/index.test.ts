@@ -1,9 +1,5 @@
 import { BaseConfig, envprop } from './index'
-import { describe, beforeEach, it, vi, expect } from 'vitest'
-import fs from 'fs'
-import os from 'os'
-import path from 'path'
-import { afterEach } from 'node:test'
+import { describe, afterEach, beforeEach, it, vi, expect } from 'vitest'
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -63,68 +59,6 @@ describe('initialization', () => {
     expect(config.MY_ARRAY_VARIABLE).toStrictEqual(['one', 'two', 'three'])
   })
 
-  it('should load environment variables from path', () => {
-    const tmpDir = fs.mkdtempSync(`${os.tmpdir()}/`)
-    const tmpFile = path.join(tmpDir, 'my-dot-env')
-    fs.writeFileSync(tmpFile, `MY_STRING_VARIABLE=custom .env value\n`)
-
-    // Define a sample class that extends BaseConfig
-    class SampleConfig extends BaseConfig {
-      @envprop.string()
-      public readonly MY_STRING_VARIABLE: string = 'default value'
-
-      @envprop.number()
-      public readonly MY_NUMBER_VARIABLE: number = 123
-
-      @envprop.string({ envSeparator: ',' })
-      public readonly MY_ARRAY_VARIABLE: string[] = ['one']
-    }
-
-    const config = new SampleConfig()
-    config.load({ path: tmpFile })
-
-    fs.rmSync(tmpDir, { recursive: true })
-
-    // Verify that the instance properties are set correctly
-    expect(config.MY_STRING_VARIABLE).toBe('custom .env value')
-    expect(config.MY_NUMBER_VARIABLE).toBe(123)
-    expect(config.MY_ARRAY_VARIABLE).toStrictEqual(['one'])
-
-    // cleanup
-    delete process.env.MY_STRING_VARIABLE
-  })
-
-  it('should NOT load environment variables from path', () => {
-    const tmpDir = fs.mkdtempSync(`${os.tmpdir()}/`)
-    const tmpFile = path.join(tmpDir, 'my-dot-env')
-    fs.writeFileSync(tmpFile, `MY_STRING_VARIABLE=custom .env value\n`)
-
-    expect(process.env.MY_STRING_VARIABLE).toBeUndefined()
-
-    // Define a sample class that extends BaseConfig
-    class SampleConfig extends BaseConfig {
-      @envprop.string()
-      public readonly MY_STRING_VARIABLE: string = 'default value'
-
-      @envprop.number()
-      public readonly MY_NUMBER_VARIABLE: number = 123
-
-      @envprop.string({ envSeparator: ',' })
-      public readonly MY_ARRAY_VARIABLE: string[] = ['one']
-    }
-
-    const config = new SampleConfig()
-    config.load({ path: tmpFile, loadEnv: false })
-
-    fs.rmSync(tmpDir, { recursive: true })
-
-    // Verify that the instance properties are set correctly
-    expect(config.MY_STRING_VARIABLE).toBe('default value')
-    expect(config.MY_NUMBER_VARIABLE).toBe(123)
-    expect(config.MY_ARRAY_VARIABLE).toStrictEqual(['one'])
-  })
-
-
   it('should load environment variables with prefix', () => {
     vi.stubEnv('MY_APP_MY_STRING_VARIABLE', 'custom value')
     vi.stubEnv('MY_NUMBER_VARIABLE', '456')
@@ -138,7 +72,7 @@ describe('initialization', () => {
     }
 
     const config = SampleConfig.load({
-      envPrefix: 'MY_APP_',
+      prefix: 'MY_APP_',
     })
 
     expect(config.MY_STRING_VARIABLE).toBe('custom value')
