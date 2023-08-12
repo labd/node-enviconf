@@ -1,57 +1,52 @@
 {
-  "name": "@labdigital/enviconf",
-  "version": "0.4.1",
-  "license": "MIT",
-  "author": "Lab Digital <opensource@labdigital.nl>",
-  "description": "A simple library to parse environment variables",
-  "keywords": [],
-  "publishConfig": {
-    "access": "public"
-  },
-  "type": "module",
-  "main": "index.js",
-  "types": "dist/index.d.ts",
-  "module": "dist/index.js",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
-  "prettier": {
-    "printWidth": 80,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "scripts": {
-    "build": "tsup",
-    "test": "pnpm vitest run",
-    "test:ci": "pnpm vitest run --coverage",
-    "publish:ci": "pnpm build && pnpm changeset publish",
-    "lint": "eslint src/*.ts",
-    "tsc": "tsc --noEmit"
-  },
-  "testMatch": [
-    "src/**/*.test.ts"
-  ],
-  "devDependencies": {
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.0",
-    "@labdigital/eslint-config-node": "^0.0.5",
-    "@types/node": "^20.2.5",
-    "@typescript-eslint/eslint-plugin": "^5.59.8",
-    "@typescript-eslint/parser": "^5.59.8",
-    "@vitest/coverage-v8": "^0.33.0",
-    "eslint": "^8.41.0",
-    "eslint-plugin-unused-imports": "^2.0.0",
-    "tslib": "^2.6.0",
-    "tsup": "^6.7.0",
-    "typescript": "^5.0.4",
-    "vitest": "^0.33.0"
-  }
+	"name": "@labdigital/enviconf",
+	"version": "0.4.1",
+	"license": "MIT",
+	"author": "Lab Digital <opensource@labdigital.nl>",
+	"description": "A simple library to parse environment variables",
+	"keywords": [],
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"main": "index.js",
+	"types": "dist/index.d.ts",
+	"module": "dist/index.js",
+	"exports": {
+		".": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "tsup",
+		"test": "pnpm vitest run",
+		"test:ci": "pnpm vitest run --coverage",
+		"publish:ci": "pnpm build && pnpm changeset publish",
+		"format": "eslint src/*.ts --fix && prettier --write src/ *.json *.js ",
+		"lint": "eslint src/*.ts",
+		"tsc": "tsc --noEmit"
+	},
+	"testMatch": [
+		"src/**/*.test.ts"
+	],
+	"devDependencies": {
+		"@changesets/changelog-github": "^0.4.8",
+		"@changesets/cli": "^2.26.0",
+		"@labdigital/eslint-config-node": "^0.0.5",
+		"@types/node": "^20.2.5",
+		"@typescript-eslint/eslint-plugin": "^5.59.8",
+		"@typescript-eslint/parser": "^5.59.8",
+		"@vitest/coverage-v8": "^0.33.0",
+		"eslint": "^8.41.0",
+		"eslint-plugin-unused-imports": "^2.0.0",
+		"tslib": "^2.6.0",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.4",
+		"vitest": "^0.33.0"
+	}
 }
