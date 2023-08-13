@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.5.0
+
+### Minor Changes
+
+- 1917c73: Remove support for loading .env files. This should be done separately
+
 ## 0.4.1
 
 ### Patch Changes
