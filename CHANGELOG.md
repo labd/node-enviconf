@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.6.0
+
+### Minor Changes
+
+- 875430c: Add support to use without decorators by implementing a static method `configure()` which calls `registerProperty()` with the options instead
+
 ## 0.5.0
 
 ### Minor Changes
