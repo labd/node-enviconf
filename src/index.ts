@@ -64,8 +64,6 @@ const storePropertyOptions = (
 	envVariableConfigs[key] = options;
 };
 
-
-
 interface Constructor<M> {
 	new (...args: any[]): M;
 }
@@ -128,7 +126,7 @@ export class BaseConfig {
 	}
 
 	/**
-	 * loadProperty is repsonsible for loading the environment variable, coercing
+	 * loadProperty is responsible for loading the environment variable, coercing
 	 * it to the correct type and validating it.
 	 */
 	private loadProperty(
@@ -193,6 +191,12 @@ export class BaseConfig {
 				}
 			});
 		} else {
+			//When the type is a hash we stringify the results again. This is because a hash might start with a numeric
+			// value, which would otherwise confuse the JSON parser
+			if (options?.type === "hash") {
+				envValue = JSON.stringify(envValue);
+			}
+
 			// Try to parse the value with JSON, if it fails then assume it's a string
 			try {
 				parsedValue = JSON.parse(envValue);
@@ -224,4 +228,5 @@ export const envprop = {
 	object: (options?: DecoratorArgs) => decorate({ type: "object", ...options }),
 	boolean: (options?: DecoratorArgs) =>
 		decorate({ type: "boolean", ...options }),
+	hash: (options?: DecoratorArgs) => decorate({ type: "hash", ...options }),
 };
