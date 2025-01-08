@@ -1,9 +1,10 @@
-export type KnownTypes = "string" | "number" | "boolean" | "object";
+export type KnownTypes = "string" | "number" | "boolean" | "object" | "hash";
 
 // validateType is a helper function to validate the type of a value. Throws
 // an error if the type is invalid.
 export const validateType = (type: KnownTypes = "string", value: any): void => {
 	switch (type) {
+		case "hash":
 		case "string":
 			if (typeof value !== "string") {
 				throw new Error(`Expected string but got ${typeof value}`);

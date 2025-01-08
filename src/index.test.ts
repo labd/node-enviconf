@@ -149,20 +149,31 @@ describe("validate", () => {
 		expect(config.MY_SECRET_VARIABLE).toBe("some-secret");
 		expect(process.env.MY_SECRET_VARIABLE).toBeUndefined();
 	});
+
+	it("should correctly interpret a hash input", () => {
+		vi.stubEnv("MY_HASH", "4979e43");
+
+		class SampleConfig extends BaseConfig {
+			@envprop.hash({ optional: true })
+			readonly MY_HASH: string | undefined;
+		}
+
+		const config = new SampleConfig();
+		config.load();
+
+		expect(config.MY_HASH).toBe("4979e43");
+	});
 });
 
 describe("inheritance", () => {
-
 	it("should load environment variables and set instance properties with default values", () => {
 		// Define a sample class that extends BaseConfig
 		class BaseSampleConfig extends BaseConfig {
 			@envprop.string()
 			public readonly MY_STRING_VARIABLE: string = "default value";
-
 		}
 
 		class SampleConfig extends BaseSampleConfig {
-
 			@envprop.number()
 			public readonly MY_NUMBER_VARIABLE: number = 123;
 
@@ -184,19 +195,18 @@ describe("inheritance", () => {
 
 		// Define a sample class that extends BaseConfig
 		class BaseSampleConfig extends BaseConfig {
-			public readonly MY_STRING_VARIABLE: string
+			public readonly MY_STRING_VARIABLE: string;
 
 			configure() {
 				this.registerProperty("MY_STRING_VARIABLE", {
 					type: "string",
 					unset: true,
 				});
-				super.configure()
+				super.configure();
 			}
 		}
 
 		class SampleConfig extends BaseSampleConfig {
-
 			public readonly MY_NUMBER_VARIABLE: number = 123;
 
 			public readonly MY_ARRAY_VARIABLE: string[] = ["one"];
@@ -211,7 +221,7 @@ describe("inheritance", () => {
 					unset: true,
 					envSeparator: ",",
 				});
-				super.configure()
+				super.configure();
 			}
 		}
 
@@ -226,5 +236,4 @@ describe("inheritance", () => {
 		// Verify that the env variable is unset
 		expect(process.env.MY_STRING_VARIABLE).toBeUndefined();
 	});
-
 });
