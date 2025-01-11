@@ -22,6 +22,7 @@
 		"dist",
 		"src"
 	],
+	"packageManager": "pnpm@9.15.3",
 	"scripts": {
 		"build": "tsup",
 		"check": "pnpm lint && tsc",
