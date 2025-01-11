@@ -1,4 +1,4 @@
-import { BaseConfig, envprop } from "./index";
+import { BaseConfig, envfield, EnviConfig, envprop } from "./index";
 import { describe, afterEach, beforeEach, it, vi, expect } from "vitest";
 
 beforeEach(() => {
@@ -212,6 +212,55 @@ describe("inheritance", () => {
 					envSeparator: ",",
 				});
 				super.configure()
+			}
+		}
+
+		const config = new SampleConfig();
+		config.load();
+
+		// Verify that the instance properties are set correctly
+		expect(config.MY_STRING_VARIABLE).toBe("a-value");
+		expect(config.MY_NUMBER_VARIABLE).toBe(123);
+		expect(config.MY_ARRAY_VARIABLE).toStrictEqual(["one"]);
+
+		// Verify that the env variable is unset
+		expect(process.env.MY_STRING_VARIABLE).toBeUndefined();
+	});
+
+	it("should support new style decorator-less config", () => {
+		vi.stubEnv("MY_STRING_VARIABLE", "a-value");
+		vi.stubEnv("MY_UNDEFINED_VARIABLE", "a-value");
+
+		// Define a sample class that extends BaseConfig
+		class BaseSampleConfig extends BaseConfig {
+			public readonly MY_STRING_VARIABLE: string
+
+			config(): EnviConfig {
+				return {
+					MY_STRING_VARIABLE: envfield.secret()
+				}
+			}
+		}
+
+		class SampleConfig extends BaseSampleConfig {
+
+			public readonly MY_NUMBER_VARIABLE: number = 123;
+
+			public readonly MY_ARRAY_VARIABLE: string[] = ["one"];
+
+			config(): EnviConfig {
+				return {
+					MY_NUMBER_VARIABLE: {
+						type: "number" as const,
+						unset: true,
+					},
+					MY_ARRAY_VARIABLE: envfield.string({
+						unset: true,
+						envSeparator: ",",
+					}),
+					MY_UNDEFINED_VARIABLE: envfield.string(),
+					...(super.config())
+				}
 			}
 		}
 

@@ -96,6 +96,10 @@ export class BaseConfig {
 		this.__configureCalled = true;
 	}
 
+	protected config(): EnvVariableDict {
+		return {}
+	}
+
 	protected registerProperty(
 		propertyKey: string,
 		options: PropertyOptions
@@ -113,6 +117,7 @@ export class BaseConfig {
 		return instance;
 	}
 
+
 	private getConfigs() {
 		let result: EnvVariableDict = {};
 
@@ -124,11 +129,16 @@ export class BaseConfig {
 			result = { ...result, ...configs };
 			target = Object.getPrototypeOf(target);
 		}
-		return result;
+
+
+		return {
+			...result,
+			...this.config(),
+		}
 	}
 
 	/**
-	 * loadProperty is repsonsible for loading the environment variable, coercing
+	 * loadProperty is responsible for loading the environment variable, coercing
 	 * it to the correct type and validating it.
 	 */
 	private loadProperty(
@@ -219,9 +229,19 @@ export class BaseConfig {
 }
 
 export const envprop = {
-	number: (options?: DecoratorArgs) => decorate({ type: "number", ...options }),
-	string: (options?: DecoratorArgs) => decorate({ type: "string", ...options }),
-	object: (options?: DecoratorArgs) => decorate({ type: "object", ...options }),
-	boolean: (options?: DecoratorArgs) =>
-		decorate({ type: "boolean", ...options }),
+	number: (options?: DecoratorArgs) => decorate(envfield.number(options)),
+	string: (options?: DecoratorArgs) => decorate(envfield.string(options)),
+	object: (options?: DecoratorArgs) => decorate(envfield.object(options)),
+	boolean: (options?: DecoratorArgs) => decorate(envfield.boolean(options)),
 };
+
+
+export const envfield = {
+	number: (options?: DecoratorArgs) => ({ type: "number" as KnownTypes, ...options }),
+	string: (options?: DecoratorArgs) => ({ type: "string" as KnownTypes, ...options }),
+	object: (options?: DecoratorArgs) => ({ type: "object" as KnownTypes, ...options }),
+	boolean: (options?: DecoratorArgs) => ({ type: "boolean" as KnownTypes, ...options }),
+	secret: (options?: Omit<DecoratorArgs, "unset">) => ({ type: "string" as KnownTypes, ...options, unset: true }),
+};
+
+export type EnviConfig = EnvVariableDict
