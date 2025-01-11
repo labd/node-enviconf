@@ -55,9 +55,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Set up Node.js
         uses: labd/gh-actions-typescript/pnpm-install@main
         with:
