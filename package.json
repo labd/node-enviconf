@@ -24,6 +24,7 @@
 	],
 	"scripts": {
 		"build": "tsup",
+		"check": "pnpm lint && tsc",
 		"test": "pnpm vitest run",
 		"test:ci": "pnpm vitest run --coverage",
 		"publish:ci": "pnpm build && pnpm changeset publish",

@@ -10,25 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v2.2.2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 8
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: labd/gh-actions-typescript/pnpm-install@main
         with:
-          node-version: 18
-          cache: "pnpm"
+          node-version: 20
 
-      - name: Run PNPM install
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
+      - name: Check formatting and typing
+        run: pnpm check
 
   build:
     name: Build, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -36,27 +26,17 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        node: ["16.x", "18.x", "20.x"]
+        node: ["20.x", "22.x"]
         os: [ubuntu-latest]
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2.2.4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 8
-
-      - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v3
+      - name: Set up Node.js ${{ matrix.node }}
+        uses: labd/gh-actions-typescript/pnpm-install@main
         with:
           node-version: ${{ matrix.node }}
-          cache: "pnpm"
-
-      - name: Run PNPM install
-        run: pnpm install --frozen-lockfile
 
       - name: Test
         run: pnpm run test:ci
@@ -71,24 +51,17 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v2.2.2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 8
+      - name: Install dependencies
+        run: pnpm install
 
-      - name: Install node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: labd/gh-actions-typescript/pnpm-install@main
         with:
-          node-version: 18
-          cache: "pnpm"
-
-      - name: Run PNPM install
-        run: pnpm install --frozen-lockfile
+          node-version: 22
 
       - name: Create and publish versions
         uses: changesets/action@v1
@@ -99,4 +72,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
