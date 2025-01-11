@@ -1,5 +1,11 @@
 # @labdigital/enviconf
 
+## 0.7.0
+
+### Minor Changes
+
+- 0b1ab9b: add new decorator-less config style using `config()` function
+
 ## 0.6.0
 
 ### Minor Changes
