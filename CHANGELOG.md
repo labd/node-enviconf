@@ -1,5 +1,15 @@
 # @labdigital/enviconf
 
+## 1.0.0
+
+### Major Changes
+
+- bfbe638: Remove support for decorators (`@enviprop`)
+
+### Patch Changes
+
+- f8fb325: Add the `disableUnset` flag to load, to disable unset functionality globally
+
 ## 0.7.0
 
 ### Minor Changes
