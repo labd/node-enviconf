@@ -2,7 +2,7 @@ export type KnownTypes = "string" | "number" | "boolean" | "object";
 
 // validateType is a helper function to validate the type of a value. Throws
 // an error if the type is invalid.
-export const validateType = (type: KnownTypes = "string", value: any): void => {
+export const validateType = (type: KnownTypes, value: any): void => {
 	switch (type) {
 		case "string":
 			if (typeof value !== "string") {
@@ -13,7 +13,7 @@ export const validateType = (type: KnownTypes = "string", value: any): void => {
 			if (typeof value !== "number") {
 				throw new Error(`Expected number but got ${typeof value}`);
 			}
-			if (isNaN(value)) {
+			if (Number.isNaN(value)) {
 				throw new Error(`Expected number but got ${typeof value}`);
 			}
 			break;
@@ -52,8 +52,8 @@ export const coerceValue = (type: KnownTypes, value: string): any => {
 		case "string":
 			return value.toString();
 		case "number": {
-			const result = parseInt(value, 10);
-			if (isNaN(result)) {
+			const result = Number.parseInt(value, 10);
+			if (Number.isNaN(result)) {
 				return value.toString();
 			}
 			return result;
