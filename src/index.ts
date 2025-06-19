@@ -6,9 +6,8 @@ import {
 } from "./parse";
 
 type Validator = (value: any) => void;
-const INTERNAL_KEY = "__envVariables";
 
-type DecoratorArgs = {
+type FieldOptions = {
 	optional?: boolean;
 	validator?: Validator;
 	unset?: boolean;
@@ -20,51 +19,13 @@ type DecoratorArgs = {
 type PropertyOptions = {
 	type: KnownTypes;
 	prefix?: string;
-} & DecoratorArgs;
+} & FieldOptions;
 
 type EnvVariableDict = Record<string, PropertyOptions>;
 
 type LoadOptions = {
 	prefix?: string;
 };
-
-/**
- * Decorator implementation. It only adds an item to the class property
- * `__envVariables` with the name of the property as key and the options passed
- * to the decorator as value. The property is then used by the `load` method
- * via `getConfigs` to process the options and load the environment variable.
- */
-function decorate(options: PropertyOptions): PropertyDecorator {
-	return function (target: object, propertyKey: string | symbol) {
-		storePropertyOptions(target, propertyKey.toString(), options);
-	};
-}
-
-// Store the options for the property in the class prototype. We have to do it
-// this way because decorators are executed before the constructor is called.
-// This means that we can't store the options in the instance because it doesn't
-// exist yet.
-const storePropertyOptions = (
-	target: object,
-	key: string,
-	options: PropertyOptions
-) => {
-	let envVariableConfigs: EnvVariableDict = (target as any)[INTERNAL_KEY];
-
-	// eslint-disable-next-line no-prototype-builtins
-	if (!target.hasOwnProperty(INTERNAL_KEY)) {
-		envVariableConfigs = {};
-		Object.defineProperty(target, INTERNAL_KEY, {
-			value: envVariableConfigs,
-			writable: false,
-			enumerable: false,
-			configurable: true,
-		});
-	}
-	envVariableConfigs[key] = options;
-};
-
-
 
 interface Constructor<M> {
 	new (...args: any[]): M;
@@ -81,7 +42,7 @@ export class BaseConfig {
 			);
 		}
 
-		const properties = this.getConfigs();
+		const properties = this.config();
 		const instance = this as any;
 		for (const [key, config] of Object.entries(properties)) {
 			const propertyConfig: PropertyOptions = {
@@ -97,15 +58,7 @@ export class BaseConfig {
 	}
 
 	protected config(): EnvVariableDict {
-		return {}
-	}
-
-	protected registerProperty(
-		propertyKey: string,
-		options: PropertyOptions
-	): void {
-		const target = Object.getPrototypeOf(this);
-		storePropertyOptions(target, propertyKey, options);
+		return {};
 	}
 
 	static load<T extends BaseConfig>(
@@ -115,26 +68,6 @@ export class BaseConfig {
 		const instance = new this();
 		instance.load(options);
 		return instance;
-	}
-
-
-	private getConfigs() {
-		let result: EnvVariableDict = {};
-
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
-		let target = this;
-		while (target) {
-			const configs: EnvVariableDict = (target as any)[INTERNAL_KEY] || {};
-
-			result = { ...result, ...configs };
-			target = Object.getPrototypeOf(target);
-		}
-
-
-		return {
-			...result,
-			...this.config(),
-		}
 	}
 
 	/**
@@ -228,20 +161,28 @@ export class BaseConfig {
 	}
 }
 
-export const envprop = {
-	number: (options?: DecoratorArgs) => decorate(envfield.number(options)),
-	string: (options?: DecoratorArgs) => decorate(envfield.string(options)),
-	object: (options?: DecoratorArgs) => decorate(envfield.object(options)),
-	boolean: (options?: DecoratorArgs) => decorate(envfield.boolean(options)),
-};
-
-
 export const envfield = {
-	number: (options?: DecoratorArgs) => ({ type: "number" as KnownTypes, ...options }),
-	string: (options?: DecoratorArgs) => ({ type: "string" as KnownTypes, ...options }),
-	object: (options?: DecoratorArgs) => ({ type: "object" as KnownTypes, ...options }),
-	boolean: (options?: DecoratorArgs) => ({ type: "boolean" as KnownTypes, ...options }),
-	secret: (options?: Omit<DecoratorArgs, "unset">) => ({ type: "string" as KnownTypes, ...options, unset: true }),
+	number: (options?: FieldOptions) => ({
+		type: "number" as KnownTypes,
+		...options,
+	}),
+	string: (options?: FieldOptions) => ({
+		type: "string" as KnownTypes,
+		...options,
+	}),
+	object: (options?: FieldOptions) => ({
+		type: "object" as KnownTypes,
+		...options,
+	}),
+	boolean: (options?: FieldOptions) => ({
+		type: "boolean" as KnownTypes,
+		...options,
+	}),
+	secret: (options?: Omit<FieldOptions, "unset">) => ({
+		type: "string" as KnownTypes,
+		...options,
+		unset: true,
+	}),
 };
 
-export type EnviConfig = EnvVariableDict
+export type EnviConfig = EnvVariableDict;
