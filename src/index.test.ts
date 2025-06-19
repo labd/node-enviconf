@@ -193,6 +193,27 @@ describe("validate", () => {
 		expect(config.MY_SECRET_VARIABLE).toBe("some-secret");
 		expect(process.env.MY_SECRET_VARIABLE).toBeUndefined();
 	});
+
+	it("should override unset value after reading environment variable", () => {
+		vi.stubEnv("MY_SECRET_VARIABLE", "some-secret");
+
+		class SampleConfig extends BaseConfig {
+			public MY_SECRET_VARIABLE: string;
+
+			config(): EnviConfig {
+				return {
+					MY_SECRET_VARIABLE: envfield.string({ unset: true }),
+				};
+			}
+		}
+
+		const config = new SampleConfig();
+		config.load({
+			disableUnset: true,
+		});
+		expect(config.MY_SECRET_VARIABLE).toBe("some-secret");
+		expect(process.env.MY_SECRET_VARIABLE).toBeDefined();
+	});
 });
 
 describe("inheritance", () => {

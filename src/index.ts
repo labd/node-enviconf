@@ -8,11 +8,35 @@ import {
 type Validator = (value: any) => void;
 
 type FieldOptions = {
+	/**
+	 * The type of the environment variable. This will be used to coerce the
+	 * value to the correct type and validate it.
+	 */
 	optional?: boolean;
+
+	/**
+	 * If set, the environment variable will be validated with this function.
+	 */
 	validator?: Validator;
+
+	/**
+	 * If set, the environment variable will be unset after it has been read.
+	 * This is useful for secret values that should not be stored in the
+	 * environment variables after they have been read.
+	 */
 	unset?: boolean;
 
+	/**
+	 * If set, the environment variable will be looked up with this name instead
+	 * of the property name. This is useful if you want to use a different
+	 * name for the environment variable than the property name.
+	 */
 	envName?: string;
+
+	/**
+	 * If set, the environment variable will be split by this separator and each
+	 * value will be coerced to the given type.
+	 */
 	envSeparator?: string;
 };
 
@@ -24,7 +48,19 @@ type PropertyOptions = {
 type EnvVariableDict = Record<string, PropertyOptions>;
 
 type LoadOptions = {
+	/**
+	 * Prefix to use for environment variables. If set, the environment variables
+	 * will first be looked up with the prefix, and if not found, the unprefixed
+	 * environment variable will be used.
+	 */
 	prefix?: string;
+
+	/**
+	 * Disable the `unset` flags for all properties. This is mostly useful for
+	 * testing or development purposes, where you want to keep the environment
+	 * variables set after loading the configuration.
+	 */
+	disableUnset?: boolean;
 };
 
 interface Constructor<M> {
@@ -33,6 +69,7 @@ interface Constructor<M> {
 
 export class BaseConfig {
 	private __configureCalled = false;
+	private options: LoadOptions | undefined;
 
 	public load(options?: LoadOptions): void {
 		this.configure();
@@ -44,6 +81,7 @@ export class BaseConfig {
 
 		const properties = this.config();
 		const instance = this as any;
+		this.options = options;
 		for (const [key, config] of Object.entries(properties)) {
 			const propertyConfig: PropertyOptions = {
 				...config,
@@ -95,7 +133,11 @@ export class BaseConfig {
 		}
 
 		// Unset the value if needed
-		if (options?.unset && envValue !== undefined) {
+		if (
+			!this.options?.disableUnset &&
+			options?.unset &&
+			envValue !== undefined
+		) {
 			delete process.env[envName];
 		}
 
