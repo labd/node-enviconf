@@ -25,30 +25,26 @@
 	"packageManager": "pnpm@9.15.3",
 	"scripts": {
 		"build": "tsup",
-		"check": "pnpm lint && tsc",
+		"check": "biome check && tsc",
 		"test": "pnpm vitest run",
 		"test:ci": "pnpm vitest run --coverage",
 		"publish:ci": "pnpm build && pnpm changeset publish",
-		"format": "eslint src/*.ts --fix && prettier --write src/ *.json *.js ",
-		"lint": "eslint src/*.ts",
+		"format": "biome format --write",
+		"lint": "biome lint",
 		"tsc": "tsc --noEmit"
 	},
 	"testMatch": [
 		"src/**/*.test.ts"
 	],
 	"devDependencies": {
-		"@changesets/changelog-github": "^0.5.0",
-		"@changesets/cli": "^2.27.1",
-		"@labdigital/eslint-config-node": "^0.2.0",
-		"@types/node": "^20.10.4",
-		"@typescript-eslint/eslint-plugin": "^6.14.0",
-		"@typescript-eslint/parser": "^6.14.0",
-		"@vitest/coverage-v8": "^1.0.4",
-		"eslint": "^8.56.0",
-		"eslint-plugin-unused-imports": "^3.0.0",
-		"tslib": "^2.6.2",
-		"tsup": "^8.0.1",
-		"typescript": "^5.3.3",
-		"vitest": "^1.0.4"
+		"@biomejs/biome": "^2.0.0",
+		"@changesets/changelog-github": "^0.5.1",
+		"@changesets/cli": "^2.29.4",
+		"@types/node": "^24.0.3",
+		"@vitest/coverage-v8": "^3.2.4",
+		"tslib": "^2.8.1",
+		"tsup": "^8.5.0",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.4"
 	}
 }

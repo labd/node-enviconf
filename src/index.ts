@@ -1,7 +1,7 @@
 import {
-	KnownTypes,
 	coerceValue,
 	getDefaultValue,
+	type KnownTypes,
 	validateType,
 } from "./parse";
 
@@ -38,7 +38,7 @@ export class BaseConfig {
 		this.configure();
 		if (!this.__configureCalled) {
 			throw new Error(
-				"configure() not called, did you forget to call super.configure()?"
+				"configure() not called, did you forget to call super.configure()?",
 			);
 		}
 
@@ -53,21 +53,21 @@ export class BaseConfig {
 		}
 	}
 
+	static load<T extends BaseConfig>(
+		this: Constructor<T>,
+		options?: LoadOptions,
+	): T {
+		const instance = new this();
+		instance.load(options);
+		return instance;
+	}
+
 	protected configure(): void {
 		this.__configureCalled = true;
 	}
 
 	protected config(): EnvVariableDict {
 		return {};
-	}
-
-	static load<T extends BaseConfig>(
-		this: Constructor<T>,
-		options?: LoadOptions
-	): T {
-		const instance = new this();
-		instance.load(options);
-		return instance;
 	}
 
 	/**
@@ -77,7 +77,7 @@ export class BaseConfig {
 	private loadProperty(
 		propertyKey: string,
 		options: PropertyOptions | undefined,
-		currentValue: any
+		currentValue: any,
 	): any {
 		let envName = options?.envName || propertyKey;
 		let envValue: string | undefined;
@@ -126,12 +126,12 @@ export class BaseConfig {
 			// Validate the type of each value
 			parsedValue.forEach((value: any, index: number) => {
 				try {
-					validateType(options?.type, value);
-				} catch (err: any) {
+					validateType(options?.type ?? "string", value);
+				} catch (err: unknown) {
 					throw new Error(
 						`Invalid type for ${envName}[${index}] = ${JSON.stringify(
-							value
-						)}: ${err.message}`
+							value,
+						)}: ${(err as Error).message}`,
 					);
 				}
 			});
@@ -143,12 +143,10 @@ export class BaseConfig {
 				parsedValue = envValue;
 			}
 			try {
-				validateType(options?.type, parsedValue);
-			} catch (err: any) {
+				validateType(options?.type ?? "string", parsedValue);
+			} catch (err: unknown) {
 				throw new Error(
-					`Invalid type for ${envName} = ${JSON.stringify(parsedValue)}: ${
-						err.message
-					}`
+					`Invalid type for ${envName} = ${JSON.stringify(parsedValue)}: ${(err as Error).message}`,
 				);
 			}
 		}

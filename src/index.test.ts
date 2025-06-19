@@ -1,5 +1,5 @@
-import { BaseConfig, envfield, EnviConfig } from "./index";
-import { describe, afterEach, beforeEach, it, vi, expect } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { BaseConfig, type EnviConfig, envfield } from "./index";
 
 beforeEach(() => {
 	vi.clearAllMocks();
@@ -147,7 +147,7 @@ describe("validate", () => {
 		expect(() => {
 			config.load();
 		}).toThrowError(
-			'Invalid type for MY_NUMBER_VARIABLE = "some-string": Expected number but got string'
+			'Invalid type for MY_NUMBER_VARIABLE = "some-string": Expected number but got string',
 		);
 	});
 
@@ -171,7 +171,7 @@ describe("validate", () => {
 		expect(() => {
 			config.load();
 		}).toThrowError(
-			'Invalid type for MY_NUMBERS[1] = "two": Expected number but got string'
+			'Invalid type for MY_NUMBERS[1] = "two": Expected number but got string',
 		);
 	});
 
