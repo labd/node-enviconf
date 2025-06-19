@@ -1,4 +1,4 @@
-import { BaseConfig, envfield, EnviConfig, envprop } from "./index";
+import { BaseConfig, envfield, EnviConfig } from "./index";
 import { describe, afterEach, beforeEach, it, vi, expect } from "vitest";
 
 beforeEach(() => {
@@ -14,14 +14,21 @@ describe("initialization", () => {
 	it("should load environment variables and set instance properties with default values", () => {
 		// Define a sample class that extends BaseConfig
 		class SampleConfig extends BaseConfig {
-			@envprop.string()
 			public readonly MY_STRING_VARIABLE: string = "default value";
 
-			@envprop.number()
 			public readonly MY_NUMBER_VARIABLE: number = 123;
 
-			@envprop.string({ envSeparator: "," })
 			public readonly MY_ARRAY_VARIABLE: string[] = ["one"];
+
+			config(): EnviConfig {
+				return {
+					MY_STRING_VARIABLE: envfield.string(),
+					MY_NUMBER_VARIABLE: envfield.number(),
+					MY_ARRAY_VARIABLE: envfield.string({
+						envSeparator: ",",
+					}),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -39,14 +46,21 @@ describe("initialization", () => {
 		vi.stubEnv("MY_ARRAY_VARIABLE", "one,two,three");
 
 		class SampleConfig extends BaseConfig {
-			@envprop.string()
 			readonly MY_STRING_VARIABLE: string = "default value";
 
-			@envprop.number()
 			readonly MY_NUMBER_VARIABLE: number;
 
-			@envprop.string({ envSeparator: "," })
 			readonly MY_ARRAY_VARIABLE: string[];
+
+			config(): EnviConfig {
+				return {
+					MY_STRING_VARIABLE: envfield.string(),
+					MY_NUMBER_VARIABLE: envfield.number(),
+					MY_ARRAY_VARIABLE: envfield.string({
+						envSeparator: ",",
+					}),
+				};
+			}
 		}
 
 		const config = SampleConfig.load();
@@ -61,11 +75,14 @@ describe("initialization", () => {
 		vi.stubEnv("MY_NUMBER_VARIABLE", "456");
 
 		class SampleConfig extends BaseConfig {
-			@envprop.string()
 			readonly MY_STRING_VARIABLE: string = "default value";
 
-			@envprop.number()
 			readonly MY_NUMBER_VARIABLE: number;
+
+			config: () => EnviConfig = () => ({
+				MY_STRING_VARIABLE: envfield.string(),
+				MY_NUMBER_VARIABLE: envfield.number(),
+			});
 		}
 
 		const config = SampleConfig.load({
@@ -80,8 +97,13 @@ describe("initialization", () => {
 describe("validate", () => {
 	it("should throw an error for missing required environment variable", () => {
 		class SampleConfig extends BaseConfig {
-			@envprop.string()
 			public MY_REQUIRED_VARIABLE: string;
+
+			config(): EnviConfig {
+				return {
+					MY_REQUIRED_VARIABLE: envfield.string(),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -93,8 +115,13 @@ describe("validate", () => {
 
 	it("should allow optional values for environment variable", () => {
 		class SampleConfig extends BaseConfig {
-			@envprop.string({ optional: true })
 			public MY_OPTIONAL_VARIABLE: string;
+
+			config(): EnviConfig {
+				return {
+					MY_OPTIONAL_VARIABLE: envfield.string({ optional: true }),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -106,8 +133,13 @@ describe("validate", () => {
 		vi.stubEnv("MY_NUMBER_VARIABLE", "some-string");
 
 		class SampleConfig extends BaseConfig {
-			@envprop.number()
 			public MY_NUMBER_VARIABLE: number;
+
+			config(): EnviConfig {
+				return {
+					MY_NUMBER_VARIABLE: envfield.number(),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -123,8 +155,15 @@ describe("validate", () => {
 		vi.stubEnv("MY_NUMBERS", "1,two,3");
 
 		class SampleConfig extends BaseConfig {
-			@envprop.number({ envSeparator: "," })
 			public MY_NUMBERS: number[];
+
+			config(): EnviConfig {
+				return {
+					MY_NUMBERS: envfield.number({
+						envSeparator: ",",
+					}),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -140,8 +179,13 @@ describe("validate", () => {
 		vi.stubEnv("MY_SECRET_VARIABLE", "some-secret");
 
 		class SampleConfig extends BaseConfig {
-			@envprop.string({ unset: true })
 			public MY_SECRET_VARIABLE: string;
+
+			config(): EnviConfig {
+				return {
+					MY_SECRET_VARIABLE: envfield.string({ unset: true }),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -152,22 +196,27 @@ describe("validate", () => {
 });
 
 describe("inheritance", () => {
-
 	it("should load environment variables and set instance properties with default values", () => {
 		// Define a sample class that extends BaseConfig
 		class BaseSampleConfig extends BaseConfig {
-			@envprop.string()
 			public readonly MY_STRING_VARIABLE: string = "default value";
-
 		}
 
 		class SampleConfig extends BaseSampleConfig {
-
-			@envprop.number()
 			public readonly MY_NUMBER_VARIABLE: number = 123;
 
-			@envprop.string({ envSeparator: "," })
 			public readonly MY_ARRAY_VARIABLE: string[] = ["one"];
+
+			config(): EnviConfig {
+				return {
+					MY_STRING_VARIABLE: envfield.string(),
+					MY_NUMBER_VARIABLE: envfield.number(),
+					MY_ARRAY_VARIABLE: envfield.string({
+						envSeparator: ",",
+					}),
+					...super.config(),
+				};
+			}
 		}
 
 		const config = new SampleConfig();
@@ -178,102 +227,4 @@ describe("inheritance", () => {
 		expect(config.MY_NUMBER_VARIABLE).toBe(123);
 		expect(config.MY_ARRAY_VARIABLE).toStrictEqual(["one"]);
 	});
-
-	it("should support non-decorator config", () => {
-		vi.stubEnv("MY_STRING_VARIABLE", "a-value");
-
-		// Define a sample class that extends BaseConfig
-		class BaseSampleConfig extends BaseConfig {
-			public readonly MY_STRING_VARIABLE: string
-
-			configure() {
-				this.registerProperty("MY_STRING_VARIABLE", {
-					type: "string",
-					unset: true,
-				});
-				super.configure()
-			}
-		}
-
-		class SampleConfig extends BaseSampleConfig {
-
-			public readonly MY_NUMBER_VARIABLE: number = 123;
-
-			public readonly MY_ARRAY_VARIABLE: string[] = ["one"];
-
-			configure() {
-				this.registerProperty("MY_NUMBER_VARIABLE", {
-					type: "number",
-					unset: true,
-				});
-				this.registerProperty("MY_ARRAY_VARIABLE", {
-					type: "string",
-					unset: true,
-					envSeparator: ",",
-				});
-				super.configure()
-			}
-		}
-
-		const config = new SampleConfig();
-		config.load();
-
-		// Verify that the instance properties are set correctly
-		expect(config.MY_STRING_VARIABLE).toBe("a-value");
-		expect(config.MY_NUMBER_VARIABLE).toBe(123);
-		expect(config.MY_ARRAY_VARIABLE).toStrictEqual(["one"]);
-
-		// Verify that the env variable is unset
-		expect(process.env.MY_STRING_VARIABLE).toBeUndefined();
-	});
-
-	it("should support new style decorator-less config", () => {
-		vi.stubEnv("MY_STRING_VARIABLE", "a-value");
-		vi.stubEnv("MY_UNDEFINED_VARIABLE", "a-value");
-
-		// Define a sample class that extends BaseConfig
-		class BaseSampleConfig extends BaseConfig {
-			public readonly MY_STRING_VARIABLE: string
-
-			config(): EnviConfig {
-				return {
-					MY_STRING_VARIABLE: envfield.secret()
-				}
-			}
-		}
-
-		class SampleConfig extends BaseSampleConfig {
-
-			public readonly MY_NUMBER_VARIABLE: number = 123;
-
-			public readonly MY_ARRAY_VARIABLE: string[] = ["one"];
-
-			config(): EnviConfig {
-				return {
-					MY_NUMBER_VARIABLE: {
-						type: "number" as const,
-						unset: true,
-					},
-					MY_ARRAY_VARIABLE: envfield.string({
-						unset: true,
-						envSeparator: ",",
-					}),
-					MY_UNDEFINED_VARIABLE: envfield.string(),
-					...(super.config())
-				}
-			}
-		}
-
-		const config = new SampleConfig();
-		config.load();
-
-		// Verify that the instance properties are set correctly
-		expect(config.MY_STRING_VARIABLE).toBe("a-value");
-		expect(config.MY_NUMBER_VARIABLE).toBe(123);
-		expect(config.MY_ARRAY_VARIABLE).toStrictEqual(["one"]);
-
-		// Verify that the env variable is unset
-		expect(process.env.MY_STRING_VARIABLE).toBeUndefined();
-	});
-
 });
