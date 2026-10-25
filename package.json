@@ -6,7 +6,8 @@
 	"description": "A simple library to parse environment variables",
 	"keywords": [],
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	},
 	"type": "module",
 	"main": "index.js",
@@ -47,5 +48,9 @@
 		"typescript": "^5.8.3",
 		"vite": "^8",
 		"vitest": "^5.0.5"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/labd/node-enviconf.git"
 	}
 }
