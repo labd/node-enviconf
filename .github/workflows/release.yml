@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # main
+        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
         with:
           node-version: 20
 
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set up Node.js ${{ matrix.node }}
-        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # main
+        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
         with:
           node-version: ${{ matrix.node }}
 
@@ -56,7 +56,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # main
+        uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
         with:
           node-version: 22
 
