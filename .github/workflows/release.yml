@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: labd/gh-actions-typescript/pnpm-install@e7a21fb56b52bf2d91616e34f0bc3f4f9a821b62 # v1.0.0
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Check formatting and typing
         run: pnpm check
@@ -26,7 +26,7 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        node: ["20.x", "22.x"]
+        node: ["22.x", "24.x"]
         os: [ubuntu-latest]
 
     steps:
