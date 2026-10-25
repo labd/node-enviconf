@@ -1,0 +1,29 @@
+minimumReleaseAge: 20160 # 14 days
+# Locked versions younger than 14 days when moving to pnpm 12; drop once they are older (after 2026-11-04).
+minimumReleaseAgeExclude:
+  - "@oxc-project/types@0.155.0"
+  - "@rolldown/binding-android-arm-eabi@1.2.15"
+  - "@rolldown/binding-android-arm64@1.2.15"
+  - "@rolldown/binding-darwin-arm64@1.2.15"
+  - "@rolldown/binding-darwin-x64@1.2.15"
+  - "@rolldown/binding-freebsd-x64@1.2.15"
+  - "@rolldown/binding-linux-arm-gnueabihf@1.2.15"
+  - "@rolldown/binding-linux-arm64-gnu@1.2.15"
+  - "@rolldown/binding-linux-arm64-musl@1.2.15"
+  - "@rolldown/binding-linux-ppc64-gnu@1.2.15"
+  - "@rolldown/binding-linux-s390x-gnu@1.2.15"
+  - "@rolldown/binding-linux-x64-gnu@1.2.15"
+  - "@rolldown/binding-linux-x64-musl@1.2.15"
+  - "@rolldown/binding-openharmony-arm64@1.2.15"
+  - "@rolldown/binding-win32-arm64-msvc@1.2.15"
+  - "@rolldown/binding-win32-x64-msvc@1.2.15"
+  - "@vitest/coverage-v8@5.0.5"
+  - "@vitest/mocker@5.0.5"
+  - "@vitest/spy@5.0.5"
+  - "postcss@8.5.31"
+  - "rolldown@1.2.15"
+  - "vite@8.3.5"
+  - "vitest@5.0.5"
+
+allowBuilds:
+  esbuild: false # postinstall only verifies the platform binary; was already skipped under pnpm 9
