@@ -23,7 +23,7 @@
 		"dist",
 		"src"
 	],
-	"packageManager": "pnpm@9.15.3",
+	"packageManager": "pnpm@12.12.0",
 	"scripts": {
 		"build": "tsup",
 		"check": "biome check && tsc",
