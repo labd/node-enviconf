@@ -41,7 +41,8 @@
 		"publish:ci": "pnpm build && pnpm changeset publish",
 		"format": "biome format --write",
 		"lint": "biome lint",
-		"tsc": "tsc --noEmit"
+		"tsc": "tsc --noEmit",
+		"publish:version": "pnpm changeset version && pnpm format"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",

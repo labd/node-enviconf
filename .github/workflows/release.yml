@@ -1,5 +1,13 @@
 name: Release
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 env:
   CI: true
@@ -10,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node.js
         uses: labd/gh-actions-typescript/pnpm-install@ada4548df9a365c62c8b396b583953c6d4bc113f # v1.1.0
@@ -31,7 +39,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node.js ${{ matrix.node }}
         uses: labd/gh-actions-typescript/pnpm-install@ada4548df9a365c62c8b396b583953c6d4bc113f # v1.1.0
@@ -47,7 +55,7 @@ jobs:
   release:
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     environment: release
     permissions:
@@ -56,7 +64,7 @@ jobs:
       pull-requests: write # create/update the release PR
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -64,7 +72,7 @@ jobs:
         uses: labd/gh-actions-typescript/pnpm-install@ada4548df9a365c62c8b396b583953c6d4bc113f # v1.1.0
         with:
           node-version: 22
-          cache: false
+          cache: "false"
 
       - name: Upgrade npm for trusted publishing
         run: npm i -g npm@^11.6.4
@@ -76,6 +84,7 @@ jobs:
           pr-title: "Release new version"
           commit-message: "update version"
           publish-script: pnpm publish:ci
+          version-script: pnpm publish:version
           # v2 pushes the release commit and tags through the GitHub API; the
           # git CLI path keeps the previous behaviour.
           push-with-git-cli: true
