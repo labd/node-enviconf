@@ -35,7 +35,6 @@
 		"publish:ci": "pnpm build && pnpm changeset publish",
 		"format": "biome format --write",
 		"lint": "biome lint",
-		"lint:package": "publint --strict",
 		"tsc": "tsc --noEmit",
 		"publish:version": "pnpm changeset version && pnpm format"
 	},
