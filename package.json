@@ -23,9 +23,9 @@
 		"dist",
 		"src"
 	],
-	"packageManager": "pnpm@12.12.0",
+	"packageManager": "pnpm@12.12.1",
 	"scripts": {
-		"build": "tsup",
+		"build": "tsdown",
 		"check": "biome check && tsc",
 		"test": "pnpm vitest run",
 		"test:ci": "pnpm vitest run --coverage",
@@ -38,15 +38,15 @@
 		"src/**/*.test.ts"
 	],
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.0",
-		"@changesets/changelog-github": "^0.5.1",
-		"@changesets/cli": "^2.29.4",
-		"@types/node": "^24.0.3",
+		"@biomejs/biome": "^2.5.15",
+		"@changesets/changelog-github": "^1.0.1",
+		"@changesets/cli": "^3.0.3",
+		"@types/node": "^26.6.5",
 		"@vitest/coverage-v8": "^5.0.5",
+		"tsdown": "^0.23.1",
 		"tslib": "^2.8.1",
-		"tsup": "^8.5.0",
-		"typescript": "^5.8.3",
-		"vite": "^8",
+		"typescript": "^7.0.2",
+		"vite": "^8.3.5",
 		"vitest": "^5.0.5"
 	},
 	"repository": {
