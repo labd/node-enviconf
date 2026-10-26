@@ -1,5 +1,7 @@
 # @labdigital/enviconf
 
+[![npm](https://img.shields.io/npm/v/@labdigital/enviconf)](https://www.npmjs.com/package/@labdigital/enviconf)
+
 A simple configuration library that loads configuration from environment
 variables and provides a simple interface to access them.
 
