@@ -40,9 +40,6 @@
 		"lint": "biome lint",
 		"tsc": "tsc --noEmit"
 	},
-	"testMatch": [
-		"src/**/*.test.ts"
-	],
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.15",
 		"@changesets/changelog-github": "^1.0.1",
