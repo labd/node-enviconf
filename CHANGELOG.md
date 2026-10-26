@@ -1,5 +1,12 @@
 # @labdigital/enviconf
 
+## 1.1.0
+
+### Minor Changes
+
+- 2a681e0: Publish as ESM-only. The CommonJS (`dist/index.cjs`) and IIFE (`dist/index.global.js`) builds are removed; the package now ships `dist/index.js` + `dist/index.d.ts` and `exports` has `types` and `default` conditions. This also fixes the package entry points: `main` pointed to a non-existent `index.js` in the package root and the type declarations were missing from `exports`. CommonJS consumers on Node.js >= 22.12 can still `require()` the package.
+- 0416c53: Require Node.js >= 22 (`engines.node` is now `>=22`). Node.js 20 and older are end-of-life and no longer supported.
+
 ## 1.0.0
 
 ### Major Changes
