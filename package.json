@@ -4,6 +4,9 @@
 	"license": "MIT",
 	"author": "Lab Digital <opensource@labdigital.nl>",
 	"description": "A simple library to parse environment variables",
+	"engines": {
+		"node": ">=22"
+	},
 	"keywords": [],
 	"publishConfig": {
 		"access": "public",
